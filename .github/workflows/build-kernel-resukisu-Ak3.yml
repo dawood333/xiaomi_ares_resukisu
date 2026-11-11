@@ -21,7 +21,7 @@ jobs:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_NOHASHDIR: "true"
       CCACHE_HARDLINK: "true"
-      CCACHE_DIR: /home/runner/.ccache
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
       CCACHE_MAXSIZE: 8G
     strategy:
       fail-fast: false
@@ -37,7 +37,7 @@ jobs:
       - name: Restore ccache
         uses: actions/cache@v4
         with:
-          path: /home/runner/.ccache
+          path: ${{ github.workspace }}/.ccache
           key: ccache-${{ runner.os }}-${{ github.ref }}
           restore-keys: |
             ccache-${{ runner.os }}-
@@ -98,6 +98,7 @@ jobs:
       
       - name: Build Kernel for K40GE
         working-directory: kernel
+        shell: bash
         env:
           args: |+
             LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
