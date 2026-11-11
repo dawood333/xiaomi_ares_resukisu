@@ -31,7 +31,7 @@ jobs:
         run: |
           apt-get update
           DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            p7zip-full git ccache wget wget2 curl patch zip build-essential bc bison flex procps \
+            p7zip-full git ccache wget wget2 curl patch zip build-essential bc bison flex procps gawk \
             libssl-dev libelf-dev python3 rsync cpio kmod ca-certificates file
 
       - name: Restore ccache
@@ -85,6 +85,8 @@ jobs:
       - name: Setup BBG
         working-directory: kernel
         run: |
+          # Baseband-guard setup uses the third argument of awk match(), which requires GNU awk.
+          ln -sf /usr/bin/gawk /usr/local/bin/awk
           wget -O- https://github.com/vc-teahouse/Baseband-guard/raw/main/setup.sh | bash
           sed -i '/^config LSM$/,/^help$/{ /^[[:space:]]*default/ { /baseband_guard/! s/selinux/selinux,baseband_guard/ } }' security/Kconfig
 
